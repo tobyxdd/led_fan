@@ -14,7 +14,7 @@
 int
 get_utf8_length(const uint8_t *src)
 {
-	switch (*src) {
+	/*switch (*src) {
 	case 0x0 ... 0x7f:
 		return 1;
 	case 0xC0 ... 0xDF:
@@ -25,7 +25,12 @@ get_utf8_length(const uint8_t *src)
 		return 4;
 	default:
 		return -1;
-	}
+	}*/
+	//gcc to MSVC port
+	if ((*src >= 0x0) && (*src <= 0x7f))return 1;
+	if ((*src >= 0xC0) && (*src <= 0xDF))return 2;
+	if ((*src >= 0xE0) && (*src <= 0xEF))return 3;
+	if ((*src >= 0xF0) && (*src <= 0xF7))return 4;
 }
 
 static int
@@ -78,7 +83,7 @@ unicode_to_gb2312(uint16_t unicode, const uint16_t *mem_gb2312, int gb2312_num)
 static uint16_t *MEM_GB2312;
 static int GB2312_NUM;
 
-static inline uint8_t
+static __inline uint8_t
 hex_ch_to_val(char hex_ch)
 {
 	if (hex_ch >= '0' && hex_ch <= '9')

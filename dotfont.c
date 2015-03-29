@@ -7,8 +7,8 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <errno.h>
-#include <sys/mman.h>
-#include <unistd.h>
+#include <mman.h>
+#include "unistd.h"
 
 /*
  * const int ASCII_W = 8;
@@ -41,7 +41,7 @@ get_gb2312font(const uint8_t *fontdata, size_t font_h, size_t font_w,
 uint8_t *
 init_fontdata(const char *fontpath)
 {
-	int fd = open(fontpath, O_RDONLY);
+	int fd = _open(fontpath, O_RDONLY);
 	if (fd < 0) {
 		perror("open");
 		return NULL;
@@ -55,7 +55,7 @@ init_fontdata(const char *fontpath)
 	uint8_t *fontdata_start;
 	fontdata_start = mmap(NULL, (size_t)fd_stat.st_size,
 			      PROT_READ, MAP_PRIVATE, fd, (off_t)0);
-	close(fd);
+	_close(fd);
 	return fontdata_start;
 }
 

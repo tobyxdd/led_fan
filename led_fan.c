@@ -1,16 +1,18 @@
 #include <SDL.h>
 #include <SDL2_gfxPrimitives.h>
 #include <SDL2_framerate.h>
-#include <sys/time.h>
+//#include <sys/time.h>
+#include <WinSock2.h>
 #include <math.h>
 #include <assert.h>
-#include <unistd.h>
-#include <getopt.h>
-
+#include "unistd.h"
+#include "getopt.h"
 #include "dotfont.h"
 #include "plane.h"
 #include "nyancat.h"
 #include "encoding_convert.h"
+
+#undef main //Fucking SDL shit
 
 #ifndef ARRAY_SIZE
 #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))
@@ -28,6 +30,30 @@
 #define DN 256.0 /* 圆周像素数 */
 
 #define BIT(nr) (1 << (nr))
+
+
+static const unsigned __int64 epoch = 116444736000000000L;
+
+/**
+* timezone information is stored outside the kernel so tzp isn't used anymore.
+*/
+
+int gettimeofday(struct timeval * tp, void * tzp)
+{
+	FILETIME    file_time;
+	SYSTEMTIME  system_time;
+	ULARGE_INTEGER ularge;
+
+	GetSystemTime(&system_time);
+	SystemTimeToFileTime(&system_time, &file_time);
+	ularge.LowPart = file_time.dwLowDateTime;
+	ularge.HighPart = file_time.dwHighDateTime;
+
+	tp->tv_sec = (long)((ularge.QuadPart - epoch) / 10000000L);
+	tp->tv_usec = (long)(system_time.wMilliseconds * 1000);
+
+	return 0;
+}
 
 /* Return the UNIX time in microseconds */
 static long long ustime(void)
@@ -212,7 +238,7 @@ int main(int argc, char **argv)
 	int font_num = 0;
 	struct font_data_s *font[32];
 	int is_cat = 0;
-	double start_angle = M_PI_2;
+	double start_angle = 1.570796;
 	Uint32 bg_color = 0x3F00FF00;
 	int period = 551; /* 旋转周期: ms */
 	int opt, index;
