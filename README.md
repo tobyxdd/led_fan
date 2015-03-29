@@ -1,5 +1,7 @@
 # LEDFan For Windows
 
+**[x86预编译EXE见Release](https://github.com/tobyxdd/led_fan/releases)**
+
 无需花钱买硬件, led_fan 让你在软件上拥有一个闪烁的 [LED 风扇(摇摇棒)](https://www.google.com/search?q=led+风扇&tbm=isch)
 
 ![demo.gif](demo.gif)
